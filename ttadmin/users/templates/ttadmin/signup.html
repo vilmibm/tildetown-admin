@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tilde.town signup page</title>
+    </head>
+    <body>
+        <h1>sign up for a tilde.town account</h1>
+
+         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+         <form action="{% url 'users:signup' %}" method="post">
+             {% csrf_token %}
+             <!-- TODO captcha of some kind -->
+             <!-- TODO help text. how best to do? could throw this all in a table :3 -->
+             <label>
+                 desired username:
+                 <input type="text" required="true" name="username">
+             </label>
+             <label>
+                 email address:
+                 <input name="email" type="email" required="true">
+             </label>
+             <label>
+                 display name:
+                 <input name="displayname" type="text">
+             </label>
+             <label>
+                 public key:
+                 <textarea name="pubkey"></textarea>
+             </label>
+             <input type="submit" value="sign up <3" />
+         </form>
+    </body>
+</html>
