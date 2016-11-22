@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
-from .models import Townie
+from .models import Townie, SSH_TYPE_CHOICES
 
 # TODO validation functions for final request validation and live js validation
 # I refuse to duplicate the logic for validation on the front-end and am going
@@ -9,6 +9,11 @@ from .models import Townie
 
 class UserSignupView(TemplateView):
     template_name = 'ttadmin/signup.html'
+
+    def get_context_data(self):
+        ctx = super().get_context_data()
+        ctx['ssh_type_choices'] = SSH_TYPE_CHOICES
+        return ctx
 
     def post(self, request):
         print(request.POST)
