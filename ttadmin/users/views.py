@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from django.urls import reverse
 
 from .forms import TownieForm
 from .models import Townie
@@ -14,11 +13,10 @@ from .models import Townie
 class SignupView(FormView):
     form_class = TownieForm
     template_name = 'users/signup.html'
-    # TODO reverse
-    success_url = '/thanks'
 
     def form_valid(self, form):
 
+        # TODO
         #t = Townie(
         #    username=username,
         #    displayname=displayname,
@@ -28,10 +26,9 @@ class SignupView(FormView):
 
         #t.set_unusable_password()
         #t.save()
+        return redirect('users:thanks')
 
-        return super().form_valid(form)
 
-
-# TODO add template for this once i've fixed template directories
+# TODO actually fill in this template
 class ThanksView(TemplateView):
     template_name = 'users/thanks.html'
