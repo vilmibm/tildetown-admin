@@ -1,12 +1,16 @@
+import re
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models import TextField, BooleanField, CharField
 
+
 SSH_TYPE_CHOICES = (
     ('ssh-rsa', 'ssh-rsa',),
     ('ssh-dss', 'ssh-dss',),
 )
+
 
 class Townie(User):
     """Both an almost normal Django User as well as an abstraction over a
@@ -14,6 +18,7 @@ class Townie(User):
     pubkey = TextField(blank=False, null=False)
     shell = CharField(max_length=50, default="/bin/bash")
     reviewed = BooleanField(default=False)
+    reasons = TextField(blank=True, null=False, default='')
     displayname = CharField(max_length=100, blank=False, null=False)
     pubkey_type = CharField(max_length=15,
                             blank=False,

@@ -1,48 +1,37 @@
+import re
+
+from django.core.exceptions import ValidationError
+from django.forms import Form, CharField, EmailField, Textarea, ChoiceField, BooleanField
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
+from django.urls import reverse
 
-from .models import Townie, SSH_TYPE_CHOICES
+from .forms import TownieForm
+from .models import Townie
 
-# TODO validation functions for final request validation and live js validation
-# I refuse to duplicate the logic for validation on the front-end and am going
-# to accept round-trip validation costs with long-term caching.
+class SignupView(FormView):
+    form_class = TownieForm
+    template_name = 'users/signup.html'
+    # TODO reverse
+    success_url = '/thanks'
 
-class UserSignupView(TemplateView):
-    template_name = 'ttadmin/signup.html'
+    def form_valid(self, form):
 
-    def get_context_data(self):
-        ctx = super().get_context_data()
-        ctx['ssh_type_choices'] = SSH_TYPE_CHOICES
-        return ctx
+        #t = Townie(
+        #    username=username,
+        #    displayname=displayname,
+        #    pubkey=pubkey,
+        #    email=email,
+        #)
 
-    def post(self, request):
-        print(request.POST)
-        # TODO validate
-        username = request.POST.get('username')
+        #t.set_unusable_password()
+        #t.save()
 
-        displayname = request.POST.get('displayname')
-
-        if displayname is None:
-            displayname = username
-        else:
-            # TODO validate
-            pass
-
-        # TODO validate
-        pubkey = request.POST.get('pubkey')
-
-        # TODO validate
-        email = request.POST.get('email')
-
-        t = Townie(
-            username=username,
-            displayname=displayname,
-            pubkey=pubkey,
-            email=email,
-        )
-
-        t.set_unusable_password()
-        t.save()
+        return super().form_valid(form)
 
 
-        return HttpResponse('LOLOLOLOL')
+# TODO add template for this once i've fixed template directories
+class ThanksView(TemplateView):
+    template_name = 'users/thanks.html'

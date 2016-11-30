@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from .views import UserSignupView
+from .views import SignupView, ThanksView
 
 app_name = 'users'
 urlpatterns = [
-        url(r'^signup/?$', UserSignupView.as_view(), name='signup'),
-
+    url(r'^signup/?$', SignupView.as_view(), name='signup'),
+    url(r'^thanks/?$', ThanksView.as_view(), name='thanks'),
 ]
