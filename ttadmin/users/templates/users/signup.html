@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tilde.town signup page</title>
+        <style type="text/css">
+         body {
+             background-color: #E0B0FF;
+         }
+         #signup th {
+             text-align:left;
+         }
+         #signup .helptext {
+             font-style:oblique;
+         }
+         #signup {
+             border-collapse: collapse;
+             border: 1px solid #ff1ac6;
+         }
+         #signup th,td {
+             border: 1px solid #ff1ac6;
+             padding:1em;
+         }
+         #signup input[type=submit] {
+             font-size:200%;
+         }
+         #signup div:last-child {
+             text-align:center;
+         }
+         #signup ul.errorlist {
+             list-style: none;
+             margin-left: 0;
+             padding-left:0;
+         }
+         #signup ul.errorlist li:before {
+             content: "~! ";
+         }
+         #signup ul.errorlist li {
+             background-color:black;
+             color:white;
+             border: .5em dashed red;
+             font-family:arial;
+             padding:2px;
+         }
+
+        </style>
+    </head>
+    <body>
+        <h1>sign up for a tilde.town account</h1>
+
+         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+         <form id="signup" action="{% url 'users:signup' %}" method="post">
+             {% csrf_token %}
+             <!-- TODO captcha of some kind -->
+             <table id="signup">
+                 <tr>
+                     <td colspan="2">
+                         <a href="http://tilde.town">tilde.town</a> is a small
+                         computer publicly accessible on the internet and meant
+                         for sharing. It is intended as an open, welcoming and
+                         safe space to explore digital art and digital
+                         socialization in a post-facebook age. tilde.town
+                         encourages lo-fi HTML art, hi-fi Javascript
+                         experiments, lots of ascii art, the sharing of feels,
+                         and chatting.
+
+                         If you have any problems with this process, please send
+                         a tweet to <a href="https://twitter.com/tildetown">@tildetown</a>
+                         or file a <a href="https://tilde.town">helpdesk ticket</a>.
+                     </td>
+                 </tr>
+                 {{ form.as_table }}
+
+             </table>
+             <div>
+                 <input type="submit" value="sign up <3" />
+             </div>
+         </form>
+    </body>
+</html>
