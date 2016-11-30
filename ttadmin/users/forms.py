@@ -25,6 +25,8 @@ NOT_A_ROBOT = 'four'
 # <_<
 
 def validate_username(username):
+    # TODO actually check for existence of user on the current system with
+    # username
     if len(username) < USERNAME_MIN_LENGTH:
         raise ValidationError('Username too short.')
     if not USERNAME_RE.match(username):
@@ -37,6 +39,7 @@ def validate_displayname(display_name):
         raise ValidationError("Valid characters: a-z, A-Z, 0-9, -, _, and '.")
 
 def validate_pubkey(pubkey):
+    # TODO see if I can get the type out
     key = ssh.SSHKey(pubkey, strict_mode=False, skip_option_parsing=True)
     try:
         key.parse()
