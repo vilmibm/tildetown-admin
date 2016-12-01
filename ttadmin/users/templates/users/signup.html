@@ -45,7 +45,7 @@
         </style>
     </head>
     <body>
-        <h1>sign up for a tilde.town account</h1>
+        <h1>sign up for a <a href="https://tilde.town">tilde.town</a> account</h1>
 
          {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -55,6 +55,7 @@
              <table id="signup">
                  <tr>
                      <td colspan="2">
+                         <p>
                          <a href="http://tilde.town">tilde.town</a> is a small
                          computer publicly accessible on the internet and meant
                          for sharing. It is intended as an open, welcoming and
@@ -63,10 +64,12 @@
                          encourages lo-fi HTML art, hi-fi Javascript
                          experiments, lots of ascii art, the sharing of feels,
                          and chatting.
-
+                         </p>
+                         <p><strong>
                          If you have any problems with this process, please send
                          a tweet to <a href="https://twitter.com/tildetown">@tildetown</a>
                          or file a <a href="https://tilde.town">helpdesk ticket</a>.
+                         </strong></p>
                      </td>
                  </tr>
                  {{ form.as_table }}
