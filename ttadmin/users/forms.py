@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms import Form, CharField, EmailField, Textarea, ChoiceField, BooleanField
 import sshpubkeys as ssh
 
-from .models import SSH_TYPE_CHOICES
+from .models import Townie, SSH_TYPE_CHOICES
 
 USERNAME_RE = re.compile(r'[a-z][a-z0-9_]+')
 USERNAME_MIN_LENGTH = 4
@@ -31,6 +31,10 @@ def validate_username(username):
         raise ValidationError('Username too short.')
     if not USERNAME_RE.match(username):
         raise ValidationError('Username must be all lowercase, start with a letter, and only use the _ special charcter')
+    duplicate = Townie.objects.filter(username=username).count()
+    if duplicate > 0:
+        raise ValidationError('Username already in use :(')
+
 
 def validate_displayname(display_name):
     if len(display_name) < DISPLAY_MIN_LENGTH:

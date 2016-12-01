@@ -34,6 +34,9 @@ class Townie(User):
         after review."""
         self.pending = False
 
+    # TODO consider a generic ensure method that syncs this model with the
+    # system. there will likely be things besides shell that we want to keep
+    # track of in the DB.
     def ensure_shell(self):
         """Runs chsh for the user to set their shell to whatever self.shell
         is."""

@@ -16,19 +16,15 @@ class SignupView(FormView):
 
     def form_valid(self, form):
 
-        # TODO
-        #t = Townie(
-        #    username=username,
-        #    displayname=displayname,
-        #    pubkey=pubkey,
-        #    email=email,
-        #)
+        del form.cleaned_data['captcha']
+        del form.cleaned_data['aup']
 
-        #t.set_unusable_password()
-        #t.save()
+        t = Townie(**form.cleaned_data)
+
+        t.set_unusable_password()
+        t.save()
         return redirect('users:thanks')
 
 
-# TODO actually fill in this template
 class ThanksView(TemplateView):
     template_name = 'users/thanks.html'
