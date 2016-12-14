@@ -16,6 +16,7 @@ setup(
     ],
     packages=['ttadmin'],
     install_requires = ['Django==1.10.2',
-                        'sshpubkeys==2.2.0',],
+                        'sshpubkeys==2.2.0',
+                        'psycopg2==2.6.2',],
     include_package_data = True,
 )

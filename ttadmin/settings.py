@@ -76,10 +76,15 @@ WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# TODO switch to postgres; use it locally and overwrite password live
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ttadmin',
+        'USER': 'ttadmin',
+        'PASSWORD': 'ttadmin',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
