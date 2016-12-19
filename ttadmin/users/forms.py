@@ -14,6 +14,7 @@ USERNAME_MIN_LENGTH = 4
 DISPLAY_NAME_RE = re.compile(r"[a-zA-Z0-9_\-']+")
 DISPLAY_MIN_LENGTH = 2
 
+
 def validate_username(username):
     if len(username) < USERNAME_MIN_LENGTH:
         raise ValidationError('Username too short.')
