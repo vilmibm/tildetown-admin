@@ -80,5 +80,3 @@ class TownieForm(Form):
         if self.errors:
             raise ValidationError('oops, looks like there were some problems below.')
         return result
-
-

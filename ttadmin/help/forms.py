@@ -3,14 +3,7 @@ from django.forms import Form, CharField, EmailField, Textarea, ChoiceField
 
 from common.forms import CaptchaField
 
-ISSUE_TYPE_CHOICES = (
-    ('logging_in', 'help logging in'),
-    ('concern_site', 'concern about the site'),
-    ('concern_user', 'concern about another user'),
-    ('package', 'install a package'),
-    ('question', 'just a question',),
-    ('other', 'something else'),
-)
+from .models import ISSUE_TYPE_CHOICES
 
 def validate_issue_text(text):
     if len(text) == 0:

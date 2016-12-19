@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 
 from .forms import TicketForm
@@ -8,5 +10,9 @@ class TicketView(FormView):
     template_name = 'help/tickets.html'
 
     def form_valid(self, form):
-        # TODO
-        pass
+        del form.cleaned_data['captcha']
+        t = Ticket.objects.create(**form.cleaned_data)
+        return redirect('help:ticket_submitted')
+
+class TicketSubmittedView(TemplateView):
+    template_name = 'help/ticket_submitted.html'
