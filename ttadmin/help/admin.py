@@ -3,4 +3,4 @@ from .models import Ticket
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('issue_status', 'issue_type', 'name', 'email')
