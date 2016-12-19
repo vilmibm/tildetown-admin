@@ -1,1 +1,73 @@
-lololol
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tilde.town help desk</title>
+        <meta charset="UTF-8">
+        <style type="text/css">
+         body {
+             background-color: #E0B0FF;
+         }
+         #tickets th {
+             text-align:left;
+         }
+         #tickets .helptext {
+             font-style:oblique;
+         }
+         #tickets {
+             border-collapse: collapse;
+             border: 1px solid #ff1ac6;
+         }
+         #tickets th,td {
+             border: 1px solid #ff1ac6;
+             padding:1em;
+         }
+         #tickets input[type=submit] {
+             font-size:200%;
+         }
+         #tickets ul.errorlist {
+             list-style: none;
+             margin-left: 0;
+             padding-left:0;
+         }
+         #tickets ul.errorlist li:before {
+             content: "~! ";
+         }
+         #tickets ul.errorlist li {
+             background-color:black;
+             color:white;
+             border: .5em dashed red;
+             font-family:arial;
+             padding:2px;
+         }
+        </style>
+    </head>
+    <body>
+        <h1>tilde.town help desk</h1>
+        <p>
+            hi!
+        </p>
+        <p>
+            this form exists to make it easier for the tilde.town admin to help
+            people out with system issues like logging in, package installation,
+            and general questions.
+        </p>
+        <p> in using this system, recall that there is just the one admin (<a
+            href="https://tilde.town/~vilmibm">~vilmibm</a>) and it might take
+            3-4 days to get a response. Usually you'll hear back within a day,
+            though!
+        </p>
+        {% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+        {% endif %}
+
+        <form id="tickets" action="{% url 'help:tickets' %}" method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <input type="submit"  value="send off ticket <3">
+        </form>
+    </body>
+</html>
+
+

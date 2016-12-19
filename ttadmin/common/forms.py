@@ -1,5 +1,6 @@
 from random import shuffle
 
+from django.core.exceptions import ValidationError
 from django.forms import ChoiceField
 
 CAPTCHA_CHOICES = [('two', 'zorp borp'),
