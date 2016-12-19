@@ -6,27 +6,15 @@ from django.forms import Form, CharField, EmailField, Textarea, ChoiceField, Boo
 import sshpubkeys as ssh
 
 from .models import Townie, SSH_TYPE_CHOICES
+from common.forms import CaptchaField
+
 
 USERNAME_RE = re.compile(r'[a-z][a-z0-9_]+')
 USERNAME_MIN_LENGTH = 4
 DISPLAY_NAME_RE = re.compile(r"[a-zA-Z0-9_\-']+")
 DISPLAY_MIN_LENGTH = 2
 
-# >_>
-CAPTCHA_CHOICES = [('two', 'zorp borp'),
-                   ('three', 'quop bop'),
-                   ('four', 'NO, I AM NOT A ROBOT'),
-                   ('five', 'crackle zop'),
-                   ('six', '*rusty screech*'),
-                   ('seven', 'mother, give me legs')]
-shuffle(CAPTCHA_CHOICES)
-CAPTCHA_CHOICES.insert(0, ('one', 'beep boop'),)
-NOT_A_ROBOT = 'four'
-# <_<
-
 def validate_username(username):
-    # TODO actually check for existence of user on the current system with
-    # username
     if len(username) < USERNAME_MIN_LENGTH:
         raise ValidationError('Username too short.')
     if not USERNAME_RE.match(username):
@@ -54,10 +42,6 @@ def validate_pubkey(pubkey):
     except Exception as e:
         raise ValidationError('unknown error: {}'.format(e))
 
-def validate_captcha(captcha):
-    if captcha != NOT_A_ROBOT:
-        raise ValidationError('Are you sure you are not a robot?')
-
 
 class TownieForm(Form):
     username = CharField(
@@ -77,12 +61,7 @@ class TownieForm(Form):
         required=False,
         label='what interests you about tilde.town?',
         help_text='This is a totally optional place for you to tell us what excites you about getting a ~ account. This is mainly just so we can all feel warm fuzzies.')
-    captcha = ChoiceField(
-        choices=CAPTCHA_CHOICES,
-        label='are you a robot?',
-        help_text='pick the response that indicates whether or not you are a robot.',
-        validators=(validate_captcha,)
-    )
+    captcha = CaptchaField()
     pubkey = CharField(
         widget=Textarea,
         validators=(validate_pubkey,),
