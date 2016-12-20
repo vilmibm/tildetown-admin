@@ -1,55 +1,17 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
         <title>tilde.town signup page</title>
-        <style type="text/css">
-         body {
-             background-color: #E0B0FF;
-         }
-         #signup th {
-             text-align:left;
-         }
-         #signup .helptext {
-             font-style:oblique;
-         }
-         #signup {
-             border-collapse: collapse;
-             border: 1px solid #ff1ac6;
-         }
-         #signup th,td {
-             border: 1px solid #ff1ac6;
-             padding:1em;
-         }
-         #signup input[type=submit] {
-             font-size:200%;
-         }
-         #signup div:last-child {
-             text-align:center;
-         }
-         #signup ul.errorlist {
-             list-style: none;
-             margin-left: 0;
-             padding-left:0;
-         }
-         #signup ul.errorlist li:before {
-             content: "~! ";
-         }
-         #signup ul.errorlist li {
-             background-color:black;
-             color:white;
-             border: .5em dashed red;
-             font-family:arial;
-             padding:2px;
-         }
-
-        </style>
+        <link rel="stylesheet" href="{% static 'common/main.css' %}">
+        <link rel="stylesheet" href="{% static 'common/form.css' %}">
     </head>
     <body>
         <h1>sign up for a <a href="https://tilde.town">tilde.town</a> account</h1>
 
          {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-         <form id="signup" action="{% url 'users:signup' %}" method="post">
+         <form class="tilde" action="{% url 'users:signup' %}" method="post">
              {% csrf_token %}
              <table id="signup">
                  <tr>

@@ -1,45 +1,27 @@
+{% load static %}
 <!DOCTYPE>
 <html>
     <head>
         <title>tilde.town guestbook</title>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'common/main.css' %}">
+        <link rel="stylesheet" href="{% static 'common/form.css' %}">
         <style type="text/css">
-         body {
-             background-color: #E0B0FF;
+         form.tilde {
+             border: 0;
          }
-         #message th {
-             text-align:left;
+         form.tilde th,td {
+             padding:0;
          }
-         #message {
-             border-collapse: collapse;
-         }
-         #message th,td {
-             border: 1px solid #ff1ac6;
-         }
-         #message input[type=submit] {
+         form.tilde input[type=submit] {
              font-size:150%;
-         }
-         #message ul.errorlist {
-             list-style: none;
-             margin-left: 0;
-             padding-left:0;
-         }
-         #message ul.errorlist li:before {
-             content: "~! ";
-         }
-         #message ul.errorlist li {
-             background-color:black;
-             color:white;
-             border: .5em dashed red;
-             font-family:arial;
-             padding:2px;
          }
         </style>
     </head>
     <body>
         <h1>tilde.town guestbook</h1>
         <marquee>~*~*~*~*say hello*~*~*~*~</marquee>
-        <form id="message" action="{% url 'guestbook:guestbook' %}" method="post">
+        <form class="tilde" action="{% url 'guestbook:guestbook' %}" method="post">
             {% csrf_token %}
             <table>
                 {{form.as_table}}

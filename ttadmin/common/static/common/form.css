@@ -1,0 +1,32 @@
+form.tilde {
+    border-collapse: collapse;
+    border: 1px solid #ff1ac6;
+}
+form.tilde th {
+    text-align:left;
+}
+form.tilde th,td {
+    border: 1px solid #ff1ac6;
+    padding:1em;
+}
+form.tilde input[type=submit] {
+    font-size:200%;
+}
+form.tilde ul.errorlist {
+    list-style: none;
+    margin-left: 0;
+    padding-left:0;
+}
+form.tilde .helptext {
+    font-style:oblique;
+}
+form.tilde ul.errorlist li:before {
+    content: "~! ";
+}
+form.tilde ul.errorlist li {
+    background-color:black;
+    color:white;
+    border: .5em dashed red;
+    font-family:arial;
+    padding:2px;
+}
