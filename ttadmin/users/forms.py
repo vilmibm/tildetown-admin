@@ -6,7 +6,10 @@ from django.forms import Form, CharField, EmailField, Textarea, ChoiceField, Boo
 import sshpubkeys as ssh
 
 from .models import Townie, SSH_TYPE_CHOICES
-from common.forms import CaptchaField
+from common.forms import CaptchaField, throttler
+
+submission_throttle = {}
+throttle_submission = throttler(submission_throttle)
 
 
 USERNAME_RE = re.compile(r'[a-z][a-z0-9_]+')
@@ -80,4 +83,5 @@ class TownieForm(Form):
         result = super().clean()
         if self.errors:
             raise ValidationError('oops, looks like there were some problems below.')
+        throttle_submission(self.cleaned_data['email'])
         return result
