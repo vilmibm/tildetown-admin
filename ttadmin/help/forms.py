@@ -51,9 +51,9 @@ class TicketForm(Form):
     def clean(self):
         result = super().clean()
 
-        throttle_submission(result['email'])
-
         if self.errors:
             raise ValidationError('oops, looks like there were some problems below.')
+
+        throttle_submission(result['email'])
 
         return result
