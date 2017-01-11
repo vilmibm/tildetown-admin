@@ -25,15 +25,6 @@ class Townie(User):
                             null=False,
                             choices=SSH_TYPE_CHOICES)
 
-    @property
-    def home_path(self):
-        return "/home/{}".format(self.username)
-
-    def accept(self):
-        """Sets self.pending to False. Indicates the user has been signed up
-        after review."""
-        self.pending = False
-
     # TODO consider a generic ensure method that syncs this model with the
     # system. there will likely be things besides shell that we want to keep
     # track of in the DB.
