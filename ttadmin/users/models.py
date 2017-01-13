@@ -15,6 +15,9 @@ SSH_TYPE_CHOICES = (
 class Townie(User):
     """Both an almost normal Django User as well as an abstraction over a
     system user."""
+    class Meta:
+        verbose_name = 'Townie'
+        verbose_name_plural = 'Townies'
     pubkey = TextField(blank=False, null=False)
     shell = CharField(max_length=50, default="/bin/bash")
     reviewed = BooleanField(default=False)
