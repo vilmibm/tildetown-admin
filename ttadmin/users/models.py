@@ -34,7 +34,7 @@ class Townie(User):
 
 
 class Pubkey(Model):
-    key_type = CharField(max_length=15,
+    key_type = CharField(max_length=50,
                          blank=False,
                          null=False,
                          choices=SSH_TYPE_CHOICES,
