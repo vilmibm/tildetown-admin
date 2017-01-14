@@ -1,9 +1,10 @@
 import re
 
+from django.db.models import Model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from django.db.models import TextField, BooleanField, CharField
+from django.db.models import TextField, BooleanField, CharField, ForeignKey
 
 
 SSH_TYPE_CHOICES = (
@@ -15,24 +16,13 @@ SSH_TYPE_CHOICES = (
 class Townie(User):
     """Both an almost normal Django User as well as an abstraction over a
     system user."""
-    pubkey = TextField(blank=False, null=False)
+    class Meta:
+        verbose_name = 'Townie'
+        verbose_name_plural = 'Townies'
     shell = CharField(max_length=50, default="/bin/bash")
     reviewed = BooleanField(default=False)
     reasons = TextField(blank=True, null=False, default='')
     displayname = CharField(max_length=100, blank=False, null=False)
-    pubkey_type = CharField(max_length=15,
-                            blank=False,
-                            null=False,
-                            choices=SSH_TYPE_CHOICES)
-
-    @property
-    def home_path(self):
-        return "/home/{}".format(self.username)
-
-    def accept(self):
-        """Sets self.pending to False. Indicates the user has been signed up
-        after review."""
-        self.pending = False
 
     # TODO consider a generic ensure method that syncs this model with the
     # system. there will likely be things besides shell that we want to keep
@@ -41,6 +31,17 @@ class Townie(User):
         """Runs chsh for the user to set their shell to whatever self.shell
         is."""
         raise NotImplementedError()
+
+
+class Pubkey(Model):
+    key_type = CharField(max_length=15,
+                         blank=False,
+                         null=False,
+                         choices=SSH_TYPE_CHOICES,
+    )
+    key = TextField(blank=False, null=False)
+    townie = ForeignKey(Townie)
+
 
 @receiver(post_save, sender=Townie)
 def sync_system_state(sender, instance, created, **kwargs):
