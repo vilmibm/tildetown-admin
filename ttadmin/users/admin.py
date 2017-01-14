@@ -13,4 +13,5 @@ class PubkeyInline(admin.TabularInline):
 @admin.register(Townie)
 class TownieAdmin(admin.ModelAdmin):
     inlines = [PubkeyInline]
-    pass
+    list_display = ('reviewed', 'username', 'email')
+    ordering = ('reviewed',)
