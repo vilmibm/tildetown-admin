@@ -4,10 +4,11 @@ _Being an adminstrative and user-signup tool for [https://tilde.town]_.
 
 ## Features
 
- (None of these are actually implemented yet)
- 
- * User signup form with client-side key generation
- * User account management
+ * User signup form (✓)
+   * with client-side key generation (only server-side key **validation** at this point)
+ * Guestbook (✓)
+ * Helpdesk (✓)
+ * User account management (admin only)
  * Start/stop services
  * Cost reporting using AWS
  * Status monitoring
