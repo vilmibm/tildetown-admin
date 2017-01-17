@@ -23,6 +23,8 @@ class SignupView(FormView):
                         key_type=form.cleaned_data.pop('pubkey_type'))
 
         t = Townie(**form.cleaned_data)
+        if not getattr(t, 'displayname'):
+            t.displayname = t.username
         t.set_unusable_password()
         t.save()
         pubkey.townie = t
