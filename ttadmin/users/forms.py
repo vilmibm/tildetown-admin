@@ -13,7 +13,7 @@ throttle_submission = throttler(submission_throttle)
 
 
 USERNAME_RE = re.compile(r'[a-z][a-z0-9_]+')
-USERNAME_MIN_LENGTH = 4
+USERNAME_MIN_LENGTH = 3
 DISPLAY_NAME_RE = re.compile(r"[a-zA-Z0-9_\-']+")
 DISPLAY_MIN_LENGTH = 2
 
