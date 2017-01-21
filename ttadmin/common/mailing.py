@@ -2,7 +2,7 @@ import logging
 
 import requests
 
-from django.conf.settings import MAILGUN_URL, MAILGUN_KEY
+from django.conf import settings
 
 logger = logging.getLogger()
 
@@ -11,8 +11,8 @@ FROM='root@tilde.town'
 def send_email(to, body, subject='a message from tilde.town', frum=FROM,):
     """Sends an email using mailgun. Logs on failure."""
     response =  requests.post(
-        MAILGUN_URL,
-        auth=('api', MAILGUN_KEY),
+        settings.MAILGUN_URL,
+        auth=('api', settings.MAILGUN_KEY),
         data={
             'from': frum,
             'to': to,
@@ -22,4 +22,7 @@ def send_email(to, body, subject='a message from tilde.town', frum=FROM,):
     )
 
     if response.status_code != 200:
-        logger.error('failed to send email "{}" to {}'.format(subject, to))
+        logger.error('{}: failed to send email "{}" to {}'.format(
+            response.status_code,
+            subject,
+            to))
