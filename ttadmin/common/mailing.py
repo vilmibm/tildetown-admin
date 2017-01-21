@@ -21,8 +21,12 @@ def send_email(to, body, subject='a message from tilde.town', frum=FROM,):
         }
     )
 
-    if response.status_code != 200:
+    success = response.status_code == 200
+
+    if not success:
         logger.error('{}: failed to send email "{}" to {}'.format(
             response.status_code,
             subject,
             to))
+
+    return success
