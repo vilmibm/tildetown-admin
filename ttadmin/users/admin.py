@@ -25,3 +25,4 @@ class TownieAdmin(admin.ModelAdmin):
     ordering = ('reviewed',)
     exclude = ('first_name', 'last_name', 'password', 'groups', 'user_permissions', 'last_login')
     actions = (bulk_review,)
+    search_fields = ('username', 'email', 'displayname')
