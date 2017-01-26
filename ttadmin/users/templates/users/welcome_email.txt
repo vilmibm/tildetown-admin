@@ -1,0 +1,13 @@
+Welcome to tilde.town, ~{{username}}!
+
+Please take a moment to review our code of conduct: https://tilde.town/~wiki/conduct.html
+
+and login with:
+
+ssh -i /path/to/private/key {{username}}@tilde.town
+
+File a help ticket if you have problems logging in (or other issues): https://cgi.tilde.town/help/tickets
+
+See you on the server!!
+
+~{{admin_name}}

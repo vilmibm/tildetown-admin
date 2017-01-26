@@ -6,6 +6,7 @@ To run this For Real, you'll want to:
  * set a different SECRET_KEY
  * change the password for the database or delete the password and use ident
  * change DEBUG to False
+ * set mailgun api info
 """
 import os
 
@@ -99,3 +100,6 @@ STATIC_URL = '/static/'
 
 # Not used during local development, but used in staging+live environments
 STATIC_ROOT = 'static'
+
+MAILGUN_URL = "OVERWRITE THIS"
+MAILGUN_KEY = "OVERWRITE THIS"
