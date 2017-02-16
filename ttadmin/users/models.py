@@ -1,10 +1,10 @@
 import os
 import re
-from subprocess import run, CalledProcessError, PIPE
+from subprocess import run, CalledProcessError
 from tempfile import TemporaryFile
 
 from django.db.models import Model
-from django.db.models.signals import pre_save, post_save, post_delete
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models import TextField, BooleanField, CharField, ForeignKey
@@ -18,22 +18,10 @@ SSH_TYPE_CHOICES = (
     ('ssh-dss', 'ssh-dss',),
 )
 
-KEYFILE_HEADER = """Hi! This file is automatically managed by tilde.town. You
-probably shouldn't change it. If you want to add more public keys that's
-totally fine: you can put them in ~/.ssh/authorized_keys"""
-TMP_PATH = '/tmp/ttadmin'
-
-ENSURE_PRESENT = 'present'
-ENSURE_ABSENT = 'absent'
-
-def user_in_passwd(username):
-    """Given a username, returns either the user's line in passwd or None.
-    Opens and reads passwd every time. Memoize or something if this becomes an
-    issue."""
-    with open('/etc/passwd') as passwd:
-        for line in passwd:
-            if username == line.split(':')[0]:
-                return line.rstrip()
+KEYFILE_HEADER = """########## GREETINGS! ##########
+# Hi! This file is automatically managed by tilde.town. You
+# probably shouldn't change it. If you want to add more public keys that's
+# totally fine: you can put them in ~/.ssh/authorized_keys"""
 
 
 class Townie(User):
@@ -66,41 +54,47 @@ class Townie(User):
 
     # managing concrete system state
 
-    def reconcile(self, ensure):
+    def create_on_disk(self):
+        """A VERY NOT IDEMPOTENT create function. Originally, I had ambitions
+        to have this be idempotent and able to incrementally update a user as
+        needed, but decided that was overkill for now."""
         assert(self.reviewed)
         dot_ssh_path = '/home/{}/.ssh'.format(self.username)
-        if ensure == ENSURE_ABSENT:
-            # TODO delete
-            # This is manual for now because it very rarely comes up and I want
-            # the present case to work.
-            pass
 
-        if ensure == ENSURE_PRESENT:
-            # TODO handle rename case either with update fields or a rename action
-            # Add the user
-            result = run(['sudo',
-                          'adduser',
-                          '--quiet',
-                          '--shell={}'.format(self.shell),
-                          '--gecos="{}"'.format(self.displayname),
-                          '--disabled-password',
-                          self.username,],
-                         check=True,
+        _guarded_run(['sudo',
+                      'adduser',
+                       '--quiet',
+                       '--shell={}'.format(self.shell),
+                       '--gecos="{}"'.format(self.displayname),
+                       '--disabled-password',
+                       self.username,])
+
+        # Create .ssh
+        _guarded_run(['sudo',
+                      '--user={}'.format(self.username),
+                       'mkdir',
+                       dot_ssh_path])
+
+        # Write out authorized_keys file
+        # Why is this a call out to a python script? There's no secure way with
+        # sudoers to allow this code to write to a file; if this code was to be
+        # compromised, the ability to write arbitrary files with sudo is a TKO.
+        # By putting the ssh key file creation into its own script, we can just
+        # give sudo access for that one command to this code.
+        #
+        # We could put the other stuff from here into that script and then only
+        # grant sudo for the script, but then we're moving code out of this
+        # virtual-env contained, maintainable thing into a script. it's my
+        # preference to have the script be as minimal as possible.
+        with TemporaryFile(dir="/tmp") as fp:
+            fp.write(self.generate_authorized_keys().encode('utf-8'))
+            fp.seek(0)
+            _guarded_run(['sudo',
+                          '--user={}'.format(self.username),
+                           '/opt/bin/create_keyfile.py',
+                           self.username],
+                          stdin=fp,
             )
-
-            # Create .ssh
-            run(['sudo', '--user={}'.format(self.username), 'mkdir', dot_ssh_path])
-
-            # Write out authorized_keys file
-            with TemporaryFile(dir="/tmp") as fp:
-                fp.write(self.generate_authorized_keys().encode('utf-8'))
-                fp.seek(0)
-                run(['sudo',
-                     '--user={}'.format(self.username),
-                     '/opt/bin/create_keyfile.py',
-                     self.username],
-                    stdin=fp
-                )
 
     def generate_authorized_keys(self):
         """returns a string suitable for writing out to an authorized_keys
@@ -108,8 +102,8 @@ class Townie(User):
         content = KEYFILE_HEADER
         pubkeys = Pubkey.objects.filter(townie=self)
         for key in pubkeys:
-            if key.startswith('ssh-'):
-                content += '\n {}'.format(key.key)
+            if key.key.startswith('ssh-'):
+                content += '\n{}'.format(key.key)
             else:
                 content += '\n{} {}'.format(key.key_type, key.key)
 
@@ -133,21 +127,23 @@ def on_townie_pre_save(sender, instance, **kwargs):
         return
 
     if not existing[0].reviewed and instance.reviewed == True:
+        instance.create_on_disk()
         instance.send_welcome_email()
 
-@receiver(post_save, sender=Townie)
-def post_save_reconcile(sender, instance, **kwargs):
-    if not instance.reviewed:
-        return
-    instance.reconcile(ENSURE_PRESENT)
+def _guarded_run(cmd_args, **run_args):
+    try:
+        run(cmd_args,
+            check=True,
+            **run_args)
+    except CalledProcessError as e:
+        Ticket.objects.create(name='system',
+                              email='root@tilde.town',
+                              issue_type='other',
+                              issue_text='error while running {}: {}'.format(
+                                  cmd_args, e))
 
-@receiver(post_delete, sender=Townie)
-def post_delete_reconcile(sender, instance, **kwargs):
-    if not instance.reviewed:
-        # TODO should i actually do this check?
-        # I might want to make it such that users can never become un-reviewed.
-        return
-    instance.reconcile(ENSURE_ABSENT)
+
+# development notes!
 
 # what the puppet module does:
 # * creates user account
