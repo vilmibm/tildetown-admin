@@ -34,3 +34,6 @@ class SignupView(FormView):
 
 class ThanksView(TemplateView):
     template_name = 'users/thanks.html'
+
+class KeyMachineView(TemplateView):
+    template_name = 'users/keymachine.html'
