@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<!--
+     IMPORTANT! all of the keygen stuff on this page is adapted from
+     https://github.com/PatrickRoumanoff/js-keygen , without which it wouldn't
+     have happened.
+-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>tilde.town magic key machine</title>
+        <script src="{% static 'users/base64url.js' %}"></script>
+        <script src="{% static 'users/ssh-util.js' %}"></script>
+        <script src="{% static 'users/js-keygen-ui.js' %}"></script>
+        <script src="{% static 'users/js-keygen.js' %}"></script>
+        <style>
+         @font-face {
+             font-family: "vt323";
+             src: url("{% static 'common/vt323.ttf' %}");
+         }
+         body {
+             background-color: #871B51;
+             font-family: "vt323";
+         }
+         h1 {
+             font-size:400%;
+         }
+         .preamble {
+             font-size: 200%;
+             background-color: #9AB211;
+             text-align: justify;
+             padding-left:10%;
+             padding-right:10%;
+
+         }
+         #generate {
+             font-size:200%;
+         }
+         a {
+             text-decoration: none;
+             color: rgb(224, 176, 255);
+         }
+         .key {
+             display: none;
+             background-color: #9AB211;
+         }
+         .key a {
+             font-weight: bold;
+         }
+        </style>
+    </head>
+    <body>
+        <h1>THE <a href="https://tilde.town">TILDE.TOWN</a> MAGIC KEY MACHINE</h1>
+        <div class="preamble">this page will make you an SSH keypair. a keypair
+        consists of a <em>public</em> key and a <em>private</em> key. they're
+        actually really long numbers that are used in some insane math which all
+        boils down to one really cool fact:</div>
+        <div class="preamble">
+            <em>
+                <strong>
+                when used together, your keypair lets your computer talk, in
+                perfect secrecy, with another computer.
+                </strong>
+            </em>
+        </div>
+        <button id="generate"><em>-> MACHINE, CLANK AWAY FOR ME! <-</em></button>
+        <div id="publickey" class="key">
+            <h2>I'm a public key!</h2>
+            <a class="save" download="id_rsa.pub"><button>save me to a file</button></a>
+            <br>
+            <textarea rows="10" cols="40"></textarea>
+        </div>
+        <div id="privatekey" class="key">
+            <h2>I'm a private key! <br><em>KEEP ME SECRET, PLEASE</em></h2>
+            <a class="save" download="id_rsa"><button>save me to a file</button></a>
+            <br>
+            <textarea rows="10" cols="40"></textarea>
+        </div>
+        <script>
+         $ = document.querySelector.bind(document);
+         var button = $('#generate');
+         var pub_ta = $('#publickey textarea');
+         var priv_ta = $('#privatekey textarea');
+         button.addEventListener('click', function() {
+             generateKeyPair(null, null, 'someone@tilde.town').then(function (keys) {
+                 var private_key = keys[0]
+                 var public_key = keys[1]
+                 pub_ta.textContent = public_key;
+                 priv_ta.textContent = private_key;
+                 $('#publickey').style.display = 'block';
+                 $('#privatekey').style.display = 'block';
+                 $('#publickey a.save').href = buildHref(public_key);
+                 $('#privatekey a.save').href = buildHref(private_key);
+             });
+         });
+
+        </script>
+    </body>
+</html>
+ 
