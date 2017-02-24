@@ -26,71 +26,104 @@
              font-size:400%;
          }
          .preamble {
-             font-size: 200%;
+             font-size: 150%;
              background-color: #9AB211;
              text-align: justify;
-             padding-left:10%;
-             padding-right:10%;
-
          }
-         #generate {
+         #controls {
+             text-align:center;
+         }
+         #controls button {
              font-size:200%;
          }
          a {
              text-decoration: none;
              color: rgb(224, 176, 255);
+             background-color:black;
          }
-         .key {
-             display: none;
+         a:hover {
+             text-decoration: underline;
+         }
+         #result {
              background-color: #9AB211;
+             display: none;
          }
-         .key a {
-             font-weight: bold;
-         }
+         #pubkey {
+             border-right: 4px solid black;
+             }
         </style>
     </head>
     <body>
         <h1>THE <a href="https://tilde.town">TILDE.TOWN</a> MAGIC KEY MACHINE</h1>
-        <div class="preamble">this page will make you an SSH keypair. a keypair
-        consists of a <em>public</em> key and a <em>private</em> key. they're
-        actually really long numbers that are used in some insane math which all
-        boils down to one really cool fact:</div>
         <div class="preamble">
-            <em>
-                <strong>
-                when used together, your keypair lets your computer talk, in
-                perfect secrecy, with another computer.
-                </strong>
-            </em>
+            this machine makes SSH keypairs: a pair of public and private files
+            that let <strong>your computer talk, in perfect secrecy, to other
+            computers</strong>.
         </div>
-        <button id="generate"><em>-> MACHINE, CLANK AWAY FOR ME! <-</em></button>
-        <div id="publickey" class="key">
-            <h2>I'm a public key!</h2>
-            <a class="save" download="id_rsa.pub"><button>save me to a file</button></a>
-            <br>
-            <textarea rows="10" cols="40"></textarea>
-        </div>
-        <div id="privatekey" class="key">
-            <h2>I'm a private key! <br><em>KEEP ME SECRET, PLEASE</em></h2>
-            <a class="save" download="id_rsa"><button>save me to a file</button></a>
-            <br>
-            <textarea rows="10" cols="40"></textarea>
-        </div>
+        <p class="preamble">
+            think of the public file as a padlock&#128274;: you can put it
+            anywhere and no one can get past it. but by using the private half
+            like a key &#128273;, which you keep secret, you can unlock your
+            padlock whenever you want.
+        </p>
+        <p class="preamble">
+            SUPER CONFUSINGLY, these "files" are both called keys: your public
+            key and private key. that doesn't make much sense and i apologize.
+        </p>
+        <p id="controls">
+            <button id="generate"><em>-> MACHINE, CLANK AWAY FOR ME! <-</em></button>
+        </p>
+        <table id="result">
+            <tr>
+                <td id="pubkey">
+                    <h2>&#128274; public key </h2>
+                    <a class="save" download="id_rsa.pub"><button>save me to a file</button></a>
+                    <br>
+                    <textarea rows="10" cols="50"></textarea>
+                </td>
+                <td id="privkey">
+                    <h2>&#128273 private key<em>(KEEP SECRET)</em></h2>
+                    <a class="save" download="id_rsa"><button>save me to a file</button></a>
+                    <br>
+                    <textarea rows="10" cols="50"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p>
+                        what now? you can now use these files with the ssh
+                        command! if, for example, you have signed up for tilde
+                        town using the public key you generated above and saved
+                        the private key as <code>id_rsa</code> in your Downloads
+                        directory, you can open a terminal and run:
+
+                        <pre>
+                           ssh -i Downloads/id_rsa YOUR_USERNAME_HERE@tilde.town
+                        </pre>
+
+                        For more information about where to save keys, how to
+                        use them, and how to use terminals (on all platforms),
+                        check out the <a
+                        href="https://tilde.town/~wiki/ssh.html">tilde.town ssh
+                        primer</a>.
+                    </p>
+                </td>
+            </tr>
+        </table>
         <script>
          $ = document.querySelector.bind(document);
          var button = $('#generate');
-         var pub_ta = $('#publickey textarea');
-         var priv_ta = $('#privatekey textarea');
+         var pub_ta = $('#pubkey textarea');
+         var priv_ta = $('#privkey textarea');
          button.addEventListener('click', function() {
              generateKeyPair(null, null, 'someone@tilde.town').then(function (keys) {
-                 var private_key = keys[0]
-                 var public_key = keys[1]
+                 var private_key = keys[0];
+                 var public_key = keys[1];
                  pub_ta.textContent = public_key;
                  priv_ta.textContent = private_key;
-                 $('#publickey').style.display = 'block';
-                 $('#privatekey').style.display = 'block';
-                 $('#publickey a.save').href = buildHref(public_key);
-                 $('#privatekey a.save').href = buildHref(private_key);
+                 $('#result').style.display = 'block';
+                 $('#pubkey a.save').href = buildHref(public_key);
+                 $('#privkey a.save').href = buildHref(private_key);
              });
          });
 
