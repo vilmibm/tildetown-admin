@@ -70,7 +70,7 @@ class TownieForm(Form):
         widget=Textarea,
         validators=(validate_pubkey,),
         label='SSH public key',
-        help_text='if this is not a thing you are familiar with, that\'s okay! check out <a href="https://tilde.town/~wiki/ssh.html">our guide</a> to learn how to get one of these.')
+        help_text='if this is not a thing you are familiar with, that\'s okay! you can make one <a href="/users/keymachine">here</a> or read <a href="https://tilde.town/~wiki/ssh.html">our guide</a> to learn more.')
     pubkey_type = ChoiceField(
         choices=SSH_TYPE_CHOICES,
         label='SSH public key type',
