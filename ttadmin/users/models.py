@@ -13,10 +13,21 @@ from django.template.loader import get_template
 from common.mailing import send_email
 from help.models import Ticket
 
+logger = logging.getLogger()
+
 SSH_TYPE_CHOICES = (
     ('ssh-rsa', 'ssh-rsa',),
     ('ssh-dss', 'ssh-dss',),
 )
+
+DEFAULT_INDEX_PATH = '/etc/skel/public_html/index.html'
+
+if os.path.exists(DEFAULT_INDEX_PATH):
+    DEFAULT_INDEX_PAGE = open(DEFAULT_INDEX_PATH).read().rstrip()
+else:
+    logger.warning('No default html page found in skel. using empty string.')
+    DEFAULT_INDEX_PAGE = ''
+
 
 KEYFILE_HEADER = """########## GREETINGS! ##########
 # Hi! This file is automatically managed by tilde.town. You
@@ -34,6 +45,10 @@ class Townie(User):
     reviewed = BooleanField(default=False)
     reasons = TextField(blank=True, null=False, default='')
     displayname = CharField(max_length=100, blank=False, null=False)
+
+    @property
+    def home(self):
+        return os.path.join('/home', self.username)
 
     def send_welcome_email(self, admin_name='vilmibm'):
         welcome_tmpl = get_template('users/welcome_email.txt')
@@ -53,6 +68,15 @@ class Townie(User):
                                   self.email))
 
     # managing concrete system state
+    def has_modified_page(self):
+        """Returns whether or not the user has modified index.html. If they
+        don't have one, returns False."""
+        index_path = os.path.join(self.home, 'public_html/index.html')
+        if not os.path.exists(index_path):
+            return False
+
+        index_page = open(index_path).read().rstrip()
+        return index_page != DEFAULT_INDEX_PAGE
 
     def create_on_disk(self):
         """A VERY NOT IDEMPOTENT create function. Originally, I had ambitions
