@@ -1,11 +1,12 @@
 import re
+import random
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.forms import Form, CharField, EmailField, Textarea, ChoiceField, BooleanField
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormView
 
 from .forms import TownieForm
@@ -37,3 +38,17 @@ class ThanksView(TemplateView):
 
 class KeyMachineView(TemplateView):
     template_name = 'users/keymachine.html'
+
+class RandomView(View):
+    def get(self):
+        url = None
+        users = list(Townie.objects.all())
+        random.shuffle(users)
+        for user in users:
+            if user.has_modified_page():
+                url = 'https://tilde.town/~{}'.format(user.username)
+                break
+        if url is None:
+            url = 'https://tilde.town'
+
+        return redirect(url)
