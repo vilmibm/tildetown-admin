@@ -40,7 +40,7 @@ class KeyMachineView(TemplateView):
     template_name = 'users/keymachine.html'
 
 class RandomView(View):
-    def get(self):
+    def get(self, request):
         url = None
         users = list(Townie.objects.all())
         random.shuffle(users)
