@@ -14,7 +14,7 @@ throttle_submission = throttler(submission_throttle)
 def validate_issue_text(text):
     if len(text) == 0:
         raise ValidationError('please describe yr issue')
-    if len(text) > 500:
+    if len(text) > 5000:
         raise ValidationError('too long')
 
 
