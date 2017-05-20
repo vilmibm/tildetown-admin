@@ -29,12 +29,12 @@ class TicketForm(Form):
     issue_type = ChoiceField(
         choices=ISSUE_TYPE_CHOICES,
         label='type of issue',
-        help_text='the type of issue that best describes your problem'
+        help_text='the type of issue that best describes your problem.'
     )
     issue_text = CharField(
         widget=Textarea,
         label="what's up?",
-        help_text='describe your issue (in 500 characters or less)',
+        help_text='describe your issue.',
         validators=(validate_issue_text,),
     )
     captcha = CaptchaField()
