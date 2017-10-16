@@ -1,18 +1,17 @@
 # tildetown-admin
 
-_Being an adminstrative and user-signup tool for [https://tilde.town]_.
+_Being an adminstrative tool written in Django for <https://tilde.town>_.
 
 ## Features, present and future
 
- * (✓) User signup form
-   * eventually with client-side key generation (only server-side key
-     **validation** at this point)
- * (✓) Guestbook
- * (✓) Helpdesk
- * (✓) User account management
- * Start/stop services
- * Cost reporting using AWS
- * Status monitoring
+ * [x] User signup form
+   * [x] client-side key generation
+ * [x] Guestbook
+ * [x] Helpdesk
+ * [x] User account management
+ * [ ] Start/stop services
+ * [ ] Cost reporting from AWS
+ * [ ] Status monitoring
  
 ## Requirements
 
@@ -21,7 +20,7 @@ _Being an adminstrative and user-signup tool for [https://tilde.town]_.
  
 ## Installation / setup
 
-Refer to the rather rough [serversetup.md](server setup guide). just ask
+Refer to the rather rough [server setup guide](serversetup.md). just ask
 ~vilmibm though if you want to set this up.
  
 ## Authors
@@ -31,4 +30,3 @@ Refer to the rather rough [serversetup.md](server setup guide). just ask
 ## License
 
 AGPL 3.0
-
