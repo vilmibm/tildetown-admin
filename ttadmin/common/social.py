@@ -11,18 +11,44 @@ mastodon = Mastodon(
 )
 
 tw_auth = tweepy.OAuthHandler(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET)
-tw_auth.set_acces_token(settings.TWITTER_TOKEN, settings.TWITTER_TOKEN_SECRET)
+tw_auth.set_access_token(settings.TWITTER_TOKEN, settings.TWITTER_TOKEN_SECRET)
 twitter = tweepy.API(tw_auth)
 
-def post_to_social(qs):
-    users = ''
-    for townie in qs:
-        users += '~{}\n'.format(townie.username)
-    users = users.strip()
-    if len(qs) != 0:
-        message = 'Welcome new users!!!\n\n{}'.format(users)
+def post_to_mastodon(qs):
+    posts = []
+    if len(qs) > 1:
+        welcome = 'Welcome new user '
     else:
-        message = 'Welcome new user {}'.format(users)
-    mastodon.post(message)
-    twitter.update_status(message)
+        welcome  = 'Welcome new users!!!\n\n'
+    message = welcome
+    for townie in qs:
+        if len(message + townie.username) + 1 > 500:
+            posts.append(message.strip())
+            message = welcome + '~{}\n'.format(townie.username)
+        else:
+            message += '~{}\n'.format(townie.username)
+    posts.append(message.strip())
+    for post in posts:
+        mastodon.post(post)
+
+def post_to_twitter(qs):
+    posts = []
+    if len(qs) > 1:
+        welcome = 'Welcome new user '
+    else:
+        welcome = 'Welcome new users!!!\n\n'
+    message = welcome
+    for townie in qs:
+        if len(message + townie.username) + 1 > 140:
+            posts.append(message.strip())
+            message = welcome + '~{}\n'.format(townie.username)
+        else:
+            message += '~{}\n'.format(townie.username)
+    post.append(message.strip())
+    for post in posts:
+        twitter.update_status(post)
+
+def post_to_social(qs):
+    post_to_twitter(qs)
+    post_to_mastodon(qs)
 
