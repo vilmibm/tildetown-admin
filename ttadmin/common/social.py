@@ -44,7 +44,7 @@ def post_to_twitter(qs):
             message = welcome + '~{}\n'.format(townie.username)
         else:
             message += '~{}\n'.format(townie.username)
-    post.append(message.strip())
+    posts.append(message.strip())
     for post in posts:
         twitter.update_status(post)
 
