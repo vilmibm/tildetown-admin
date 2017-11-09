@@ -1,3 +1,5 @@
+import re
+
 from mastodon import Mastodon
 import tweepy
 
@@ -14,41 +16,49 @@ tw_auth = tweepy.OAuthHandler(settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CO
 tw_auth.set_access_token(settings.TWITTER_TOKEN, settings.TWITTER_TOKEN_SECRET)
 twitter = tweepy.API(tw_auth)
 
-def post_to_mastodon(qs):
+def split_posts_by_length(text, length):
+    pattern = '.{,%d}(?:\s|$)' % length - 1
+    chunks = re.findall(pattern, text)
     posts = []
-    if len(qs) > 1:
-        welcome = 'Welcome new user '
-    else:
-        welcome  = 'Welcome new users!!!\n\n'
-    message = welcome
-    for townie in qs:
-        if len(message + townie.username) + 1 > 500:
-            posts.append(message.strip())
-            message = welcome + '~{}\n'.format(townie.username)
+    post = ''
+    for chunk in chunks:
+        if len(post + chunk) <= length:
+            post += chunk
         else:
-            message += '~{}\n'.format(townie.username)
-    posts.append(message.strip())
-    for post in posts:
-        mastodon.post(post)
+            posts.append(post)
+            post = chunk
+    return posts
 
-def post_to_twitter(qs):
-    posts = []
-    if len(qs) > 1:
-        welcome = 'Welcome new user '
-    else:
-        welcome = 'Welcome new users!!!\n\n'
-    message = welcome
-    for townie in qs:
-        if len(message + townie.username) + 1 > 140:
-            posts.append(message.strip())
-            message = welcome + '~{}\n'.format(townie.username)
+
+def post_to_mastodon(message):
+    posts = split_posts_by_length(message, 500)
+    status_info = None
+    for post in posts:
+        if status_info:
+            status_info = mastodon.status_post(post, in_reply_to_id=status_info['id'])
         else:
-            message += '~{}\n'.format(townie.username)
-    posts.append(message.strip())
-    for post in posts:
-        twitter.update_status(post)
+            status_info = mastodon.status_post(post)
 
-def post_to_social(qs):
-    post_to_twitter(qs)
-    post_to_mastodon(qs)
+
+def post_to_twitter(message):
+    posts = split_posts_by_length(message, 140)
+    status_info = None
+    for post in posts:
+        if status_info:
+            status_info = twitter.update_status(post, in_reply_to_status_id=status_info.id)
+        else:
+            status_info = twitter.update_status(post)
+
+
+def post_users_to_social(qs):
+    users = ''
+    for townie in qs:
+        users += '~{}\n'.format(townie.username)
+    users = users.strip()
+    if len(qs) > 1:
+        message = 'Welcome new users!!!\n\n{}'.format(users)
+    else:
+        message = 'Welcome new user {}!'.format(users)
+    post_to_mastodon(message)
+    post_to_twitter(message)
 
