@@ -27,6 +27,8 @@ def split_posts_by_length(text, length):
         else:
             posts.append(post)
             post = chunk
+    if post:
+        posts.append(post)
     return posts
 
 
