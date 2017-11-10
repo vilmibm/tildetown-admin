@@ -18,7 +18,7 @@ ISSUE_STATUS_CHOICES = (
 
 
 class Ticket(Model):
-    name = TextField(blank=False, null=False)
+    name = CharField(blank=False, null=False, max_length=100)
     email = EmailField(blank=False, null=False)
     issue_type = CharField(choices=ISSUE_TYPE_CHOICES,
                            blank=False,
