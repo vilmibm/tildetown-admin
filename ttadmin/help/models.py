@@ -16,7 +16,6 @@ ISSUE_STATUS_CHOICES = (
     ('completed', 'nothing more to do'),
 )
 
-
 class Ticket(Model):
     name = TextField(blank=False, null=False)
     email = EmailField(blank=False, null=False)
@@ -30,6 +29,17 @@ class Ticket(Model):
                              null=False,
                              max_length=50,
                              default=ISSUE_STATUS_CHOICES[0][0])
+
+    def cycle_state(self):
+        current_state = self.issue_status
+        current_index = (i for i,v
+                         in enumerate(ISSUE_STATUS_CHOICES)
+                         if v[0] == self.issue_status).__next__()
+        next_index = current_index + 1
+        if next_index > len(ISSUE_STATE_CHOICES) - 1:
+            next_index = 0
+        self.issue_status = ISSUE_STATUS_CHOICES[next_index][0]
+
 
     def __str__(self):
         return '{} from {}'.format(self.issue_type, self.name)

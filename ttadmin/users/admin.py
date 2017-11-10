@@ -12,13 +12,13 @@ class PubkeyInline(admin.TabularInline):
     model = Pubkey
     extra = 1
 
-def bulk_review(madmin, req, qs):
+def mark_reviewed(madmin, req, qs):
     for townie in qs:
         townie.reviewed = True
         townie.save()
     post_users_to_social(qs)
 
-bulk_review.short_description = 'mark selected townies as reviewed'
+mark_reviewed.short_description = 'mark selected as reviewed'
 
 @admin.register(Townie)
 class TownieAdmin(admin.ModelAdmin):
@@ -26,5 +26,5 @@ class TownieAdmin(admin.ModelAdmin):
     list_display = ('username', 'reviewed', 'email')
     ordering = ('reviewed',)
     exclude = ('first_name', 'last_name', 'password', 'groups', 'user_permissions', 'last_login')
-    actions = (bulk_review,)
+    actions = (mark_reviewed,)
     search_fields = ('username', 'email', 'displayname')
