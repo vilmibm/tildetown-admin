@@ -4,9 +4,6 @@ from django.contrib.auth.models import Group
 
 from .models import Townie, Pubkey
 
-admin.site.unregister(User)
-admin.site.unregister(Group)
-
 class PubkeyInline(admin.TabularInline):
     model = Pubkey
     extra = 1
@@ -23,6 +20,6 @@ class TownieAdmin(admin.ModelAdmin):
     inlines = [PubkeyInline]
     list_display = ('username', 'reviewed', 'email')
     ordering = ('reviewed',)
-    exclude = ('first_name', 'last_name', 'password', 'groups', 'user_permissions', 'last_login')
+    exclude = ('first_name', 'last_name', 'password', 'groups', 'user_permissions', 'last_login', 'is_staff', 'is_active', 'is_superuser')
     actions = (bulk_review,)
     search_fields = ('username', 'email', 'displayname')
