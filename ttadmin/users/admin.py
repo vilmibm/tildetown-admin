@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
 from .models import Townie, Pubkey
+from common.social import post_users_to_social
 
 class PubkeyInline(admin.TabularInline):
     model = Pubkey
@@ -12,6 +13,7 @@ def bulk_review(madmin, req, qs):
     for townie in qs:
         townie.reviewed = True
         townie.save()
+    post_users_to_social(qs)
 
 bulk_review.short_description = 'mark selected townies as reviewed'
 
