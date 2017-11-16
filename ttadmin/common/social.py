@@ -64,3 +64,8 @@ def post_users_to_social(qs):
     post_to_mastodon(message)
     post_to_twitter(message)
 
+def post_single_user_social(username):
+    message = 'Welcome new user ~{}!'.format(username)
+    post_to_mastodon(message)
+    post_to_twitter(message)
+
