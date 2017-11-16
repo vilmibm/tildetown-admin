@@ -43,7 +43,7 @@ def post_to_mastodon(message):
 
 
 def post_to_twitter(message):
-    posts = split_posts_by_length(message, 140)
+    posts = split_posts_by_length(message, 280)
     status_info = None
     for post in posts:
         if status_info:
