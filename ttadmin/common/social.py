@@ -17,7 +17,7 @@ tw_auth.set_access_token(settings.TWITTER_TOKEN, settings.TWITTER_TOKEN_SECRET)
 twitter = tweepy.API(tw_auth)
 
 def split_posts_by_length(text, length):
-    pattern = '.{,%d}(?:\s|$)' % length - 1
+    pattern = '.{,%d}(?:\s|$)' % (length - 1)
     chunks = re.findall(pattern, text)
     posts = []
     post = ''
@@ -43,7 +43,7 @@ def post_to_mastodon(message):
 
 
 def post_to_twitter(message):
-    posts = split_posts_by_length(message, 140)
+    posts = split_posts_by_length(message, 280)
     status_info = None
     for post in posts:
         if status_info:
@@ -61,6 +61,11 @@ def post_users_to_social(qs):
         message = 'Welcome new users!!!\n\n{}'.format(users)
     else:
         message = 'Welcome new user {}!'.format(users)
+    post_to_mastodon(message)
+    post_to_twitter(message)
+
+def post_single_user_social(username):
+    message = 'Welcome new user ~{}!'.format(username)
     post_to_mastodon(message)
     post_to_twitter(message)
 

@@ -12,6 +12,7 @@ from django.db.models import TextField, BooleanField, CharField, ForeignKey
 from django.template.loader import get_template
 
 from common.mailing import send_email
+from common.social import post_single_user_social
 from help.models import Ticket
 
 logger = logging.getLogger()
@@ -154,6 +155,7 @@ def on_townie_pre_save(sender, instance, **kwargs):
     if not existing[0].reviewed and instance.reviewed == True:
         instance.create_on_disk()
         instance.send_welcome_email()
+        post_single_user_social(instance.username)
 
 def _guarded_run(cmd_args, **run_args):
     try:
