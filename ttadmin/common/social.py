@@ -17,7 +17,7 @@ tw_auth.set_access_token(settings.TWITTER_TOKEN, settings.TWITTER_TOKEN_SECRET)
 twitter = tweepy.API(tw_auth)
 
 def split_posts_by_length(text, length):
-    pattern = '.{,%d}(?:\s|$)' % length - 1
+    pattern = '.{,%d}(?:\s|$)' % (length - 1)
     chunks = re.findall(pattern, text)
     posts = []
     post = ''
