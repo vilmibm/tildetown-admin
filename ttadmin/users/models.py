@@ -155,7 +155,6 @@ def on_townie_pre_save(sender, instance, **kwargs):
     if not existing[0].reviewed and instance.reviewed == True:
         instance.create_on_disk()
         instance.send_welcome_email()
-        post_single_user_social(instance.username)
 
 def _guarded_run(cmd_args, **run_args):
     try:
