@@ -89,11 +89,12 @@ class Townie(User):
 
         _guarded_run(['sudo',
                       'adduser',
-                       '--quiet',
-                       '--shell={}'.format(self.shell),
-                       '--gecos="{}"'.format(self.displayname),
-                       '--disabled-password',
-                       self.username,])
+                      '--quiet',
+                      '--groups=town',
+                      '--shell={}'.format(self.shell),
+                      '--gecos="{}"'.format(self.displayname),
+                      '--disabled-password',
+                      self.username,])
 
         # Create .ssh
         _guarded_run(['sudo',
