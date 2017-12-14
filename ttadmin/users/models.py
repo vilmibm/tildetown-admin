@@ -86,25 +86,35 @@ class Townie(User):
         assert(self.reviewed)
         dot_ssh_path = '/home/{}/.ssh'.format(self.username)
 
-        _guarded_run(['sudo',
-                      'adduser',
-                      '--quiet',
-                      '--shell={}'.format(self.shell),
-                      '--gecos="{}"'.format(self.displayname),
-                      '--disabled-password',
-                      self.username,])
+        error = _guarded_run(['sudo',
+                              'adduser',
+                              '--quiet',
+                              '--shell={}'.format(self.shell),
+                              '--gecos="{}"'.format(self.displayname),
+                              '--disabled-password',
+                              self.username])
+        if error:
+            logging.error(error)
+            return
 
-        _guarded_run(['sudo',
-                      'usermod',
-                      '-a',
-                      '-Gtown',
-                      self.username])
+        error = _guarded_run(['sudo',
+                              'usermod',
+                              '-a',
+                              '-Gtown',
+                              self.username])
+
+        if error:
+            logging.error(error)
+            return
 
         # Create .ssh
-        _guarded_run(['sudo',
-                      '--user={}'.format(self.username),
-                       'mkdir',
-                       dot_ssh_path])
+        error = _guarded_run(['sudo',
+                              '--user={}'.format(self.username),
+                              'mkdir',
+                              dot_ssh_path])
+        if error:
+            logging.error(error)
+            return
 
         # Write out authorized_keys file
         # Why is this a call out to a python script? There's no secure way with
@@ -120,12 +130,13 @@ class Townie(User):
         with TemporaryFile(dir="/tmp") as fp:
             fp.write(self.generate_authorized_keys().encode('utf-8'))
             fp.seek(0)
-            _guarded_run(['sudo',
-                          '--user={}'.format(self.username),
-                           '/opt/bin/create_keyfile.py',
-                           self.username],
-                          stdin=fp,
-            )
+            error = _guarded_run(['sudo',
+                                  '--user={}'.format(self.username),
+                                  '/opt/bin/create_keyfile.py',
+                                  self.username],
+                                 stdin=fp)
+            if error:
+                logging.error(error)
 
     def generate_authorized_keys(self):
         """returns a string suitable for writing out to an authorized_keys
@@ -161,7 +172,12 @@ def on_townie_pre_save(sender, instance, **kwargs):
         instance.create_on_disk()
         instance.send_welcome_email()
 
+
 def _guarded_run(cmd_args, **run_args):
+    """Given a list of args representing a command invocation as well as var
+    args to pass onto subprocess.run, run the command and check for an error.
+    if there is one, files a helpdesk ticket and returns it. Returns None on
+    success."""
     try:
         run(cmd_args,
             check=True,
@@ -172,6 +188,7 @@ def _guarded_run(cmd_args, **run_args):
                               issue_type='other',
                               issue_text='error while running {}: {}'.format(
                                   cmd_args, e))
+        return e
 
 
 # development notes!
