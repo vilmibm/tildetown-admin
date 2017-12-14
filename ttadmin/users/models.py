@@ -58,14 +58,15 @@ class Townie(User):
         }
         text = welcome_tmpl.render(context)
         from_address = '{}@tilde.town'.format(admin_name)
-        success = send_email(self.email, text, subject='tilde.town!', frum=from_address)
+        success = send_email(self.email, text, subject='tilde.town!',
+                             frum=from_address)
         if not success:
             Ticket.objects.create(name='system',
                                   email='root@tilde.town',
                                   issue_type='other',
                                   issue_text='was not able to send welcome email to {} ({})'.format(
                                       self.username,
-                                  self.email))
+                                      self.email))
 
     # managing concrete system state
     def has_modified_page(self):
