@@ -1,6 +1,5 @@
 import logging
 import os
-import re
 from subprocess import run, CalledProcessError
 from tempfile import TemporaryFile
 
@@ -12,7 +11,6 @@ from django.db.models import TextField, BooleanField, CharField, ForeignKey
 from django.template.loader import get_template
 
 from common.mailing import send_email
-from common.social import post_single_user_social
 from help.models import Ticket
 
 logger = logging.getLogger()
