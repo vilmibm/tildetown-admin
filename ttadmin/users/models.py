@@ -194,27 +194,7 @@ def _guarded_run(cmd_args, **run_args):
         return e
 
 
-# development notes!
-
-# what the puppet module does:
-# * creates user account
-# * creates home directory
-# * creates authorized_keys2
-# * adds user to group 'tilde' (why?)
-# * sets shell
-# * creates .ssh directory
-# * creates .irssi directory
-# * creates templatized .irssi config file (irssi isn't even default anymore...)
-# * creates hardcoded .twurlrc file (why not skel?)
-#
-# some of this stuff is pointless and the actually required stuff is:
-# * create user account (useradd)
-# * create home dir (useradd)
-# * create .ssh/authorized_keys2 (need functions for this
-# * set shell (chsh)
-# * create .twurlrc (just use /etc/skel)
-
-# other things to consider:
+# things to consider:
 # * what happens when a user wants their name changed?
 #  * it looks like usermod -l and a mv of the home dir can change a user's username.
 #  * would hook this into the pre_save signal to note a username change
@@ -231,12 +211,3 @@ def _guarded_run(cmd_args, **run_args):
 #  * username
 #  * displayname (only if i start using this?)
 #  * ssh key
-#
-# how should this code be structured?
-# * within the Townie model, hardcoded
-# * outside the Townie model, procedurally
-# * within an abstract class
-#
-# for now my gut says to implement stuff hardcoded in the Townie class but with
-# an eye towards generalizing the pattern in some base class for other
-# resources as needed.
