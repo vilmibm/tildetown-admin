@@ -116,6 +116,9 @@ class Townie(User):
             logging.error(error)
             return
 
+        self.write_authorized_keys()
+
+    def write_authorized_keys(self):
         # Write out authorized_keys file
         # Why is this a call out to a python script? There's no secure way with
         # sudoers to allow this code to write to a file; if this code was to be
