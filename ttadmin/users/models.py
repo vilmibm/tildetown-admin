@@ -18,6 +18,7 @@ logger = logging.getLogger()
 SSH_TYPE_CHOICES = (
     ('ssh-rsa', 'ssh-rsa',),
     ('ssh-dss', 'ssh-dss',),
+    ('ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp256'),
 )
 
 DEFAULT_INDEX_PATH = '/etc/skel/public_html/index.html'
