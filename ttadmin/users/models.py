@@ -4,7 +4,7 @@ from subprocess import run, CalledProcessError
 from tempfile import TemporaryFile
 
 from django.db.models import Model
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.db.models import TextField, BooleanField, CharField, ForeignKey
@@ -163,6 +163,11 @@ class Pubkey(Model):
     townie = ForeignKey(Townie)
 
 
+@receiver(post_save, sender=Pubkey)
+def on_pubkey_post_save(sender, instance, **kwargs):
+    instance.townie.write_authorized_keys()
+
+
 @receiver(pre_save, sender=Townie)
 def on_townie_pre_save(sender, instance, **kwargs):
     existing = Townie.objects.filter(username=instance.username)
@@ -173,14 +178,9 @@ def on_townie_pre_save(sender, instance, **kwargs):
 
     existing = existing[0]
 
-    needs_creation = not existing.reviewed and instance.reviewed == True
-    regen_keyfile = needs_creation or set(existing.pubkey_set.all()) != set(instance.pubkey_set.all())
-
-    if needs_creation:
+    if not existing.reviewed and instance.reviewed == True:
         instance.create_on_disk()
         instance.send_welcome_email()
-
-    if regen_keyfile:
         instance.write_authorized_keys()
 
 
