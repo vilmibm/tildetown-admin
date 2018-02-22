@@ -17,7 +17,7 @@ setup(
     packages=['ttadmin'],
     install_requires = ['Django==1.10.2',
                         'sshpubkeys==2.2.0',
-                        'psycopg2-binary==2.7.4',
+                        'psycopg2==2.6.2',
                         'requests==2.12.5',
                         'gunicorn==19.6.0',
                         'Mastodon.py==1.1.1',
