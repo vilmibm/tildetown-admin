@@ -148,7 +148,7 @@ class Townie(User):
             if pubkey.key.startswith('ssh-'):
                 content += '\n{}'.format(pubkey.key)
             else:
-                content += '\n{} {}'.format(key.key_type, pubkey.key)
+                content += '\n{} {}'.format(pubkey.key_type, pubkey.key)
 
         return content
 
