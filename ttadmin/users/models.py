@@ -32,7 +32,7 @@ else:
 
 KEYFILE_HEADER = """########## GREETINGS! ##########
 # Hi! This file is automatically managed by tilde.town. You
-# probably shouldn't change it. If you want to add more public keys that's
+# seriously shouldn't change it. If you want to add more public keys that's
 # totally fine: you can put them in ~/.ssh/authorized_keys"""
 
 
