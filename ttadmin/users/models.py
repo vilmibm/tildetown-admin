@@ -117,8 +117,6 @@ class Townie(User):
             logging.error(error)
             return
 
-        self.write_authorized_keys()
-
     def write_authorized_keys(self):
         # Write out authorized_keys file
         # Why is this a call out to a python script? There's no secure way with
@@ -146,12 +144,11 @@ class Townie(User):
         """returns a string suitable for writing out to an authorized_keys
         file"""
         content = KEYFILE_HEADER
-        pubkeys = Pubkey.objects.filter(townie=self)
-        for key in pubkeys:
-            if key.key.startswith('ssh-'):
-                content += '\n{}'.format(key.key)
+        for pubkey in self.pubkey_set.all():
+            if pubkey.key.startswith('ssh-'):
+                content += '\n{}'.format(pubkey.key)
             else:
-                content += '\n{} {}'.format(key.key_type, key.key)
+                content += '\n{} {}'.format(key.key_type, pubkey.key)
 
         return content
 
@@ -169,12 +166,22 @@ class Pubkey(Model):
 @receiver(pre_save, sender=Townie)
 def on_townie_pre_save(sender, instance, **kwargs):
     existing = Townie.objects.filter(username=instance.username)
-    if not existing: # we're making a new user
+    if not existing:
+        # we're making a new Townie; this means someone just signed up. We
+        # don't care at all about their state on disk.
         return
 
-    if not existing[0].reviewed and instance.reviewed == True:
+    existing = existing[0]
+
+    needs_creation = not existing.reviewed and instance.reviewed == True
+    regen_keyfile = needs_creation or set(existing.pubkey_set.all()) != set(instance.pubkey_set.all())
+
+    if needs_creation:
         instance.create_on_disk()
         instance.send_welcome_email()
+
+    if regen_keyfile:
+        instance.write_authorized_keys()
 
 
 def _guarded_run(cmd_args, **run_args):
