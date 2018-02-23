@@ -152,13 +152,25 @@ class Townie(User):
 
         return content
 
+    def rename_on_disk(self, old_username):
+        """Assuming that this instance has a new name set, renames this user on
+        disk with self.username."""
+        error = _guarded_run([
+            'sudo',
+            '/tilde/bin/rename_user.py',
+            old_username,
+            self.username])
+        if error:
+            logging.error(error)
+            return
+        logging.info('Renamed {} to {}'.format(old_username, self.username))
+
 
 class Pubkey(Model):
     key_type = CharField(max_length=50,
                          blank=False,
                          null=False,
-                         choices=SSH_TYPE_CHOICES,
-    )
+                         choices=SSH_TYPE_CHOICES)
     key = TextField(blank=False, null=False)
     townie = ForeignKey(Townie)
 
