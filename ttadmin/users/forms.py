@@ -34,6 +34,7 @@ def validate_displayname(display_name):
     if not DISPLAY_NAME_RE.match(display_name):
         raise ValidationError("Valid characters: a-z, A-Z, 0-9, -, _, and '.")
 
+
 def validate_pubkey(pubkey):
     # TODO see if I can get the type out
     key = ssh.SSHKey(pubkey, strict_mode=False, skip_option_parsing=True)
