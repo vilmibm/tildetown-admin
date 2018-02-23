@@ -200,10 +200,15 @@ def on_townie_pre_save(sender, instance, **kwargs):
 
     existing = existing[0]
 
-    if not existing.reviewed and instance.reviewed == True:
+    # See if we need to create this user on disk.
+    if not existing.reviewed and instance.reviewed is True:
         instance.create_on_disk()
         instance.send_welcome_email()
         instance.write_authorized_keys()
+
+    # See if this user needs a rename on disk
+    if existing.username != instance.username:
+        instance.rename_on_disk(existing.username)
 
 
 def _guarded_run(cmd_args, **run_args):
