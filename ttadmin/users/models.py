@@ -230,9 +230,6 @@ def _guarded_run(cmd_args, **run_args):
 
 
 # things to consider:
-# * what happens when a user wants their name changed?
-#  * it looks like usermod -l and a mv of the home dir can change a user's username.
-#  * would hook this into the pre_save signal to note a username change
 # * what happens when a user is marked as not reviewed?
 #  * does this signal user deletion? Or does literal Townie deletion signal
 #    "needs to be removed from disk"? I think it makes the most sense for the
@@ -242,7 +239,3 @@ def _guarded_run(cmd_args, **run_args):
 #    think I can ignore it.
 # * what happens when a user needs to be banned?
 #  * the Townie should be deleted via post_delete signal
-# * what are things about a user that might change in django and require changes on disk?
-#  * username
-#  * displayname (only if i start using this?)
-#  * ssh key
