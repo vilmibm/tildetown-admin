@@ -165,7 +165,17 @@ class Pubkey(Model):
 
 @receiver(post_save, sender=Pubkey)
 def on_pubkey_post_save(sender, instance, **kwargs):
-    instance.townie.write_authorized_keys()
+    # Ensure we're checking the townie as it exists at the point of pubkey
+    # save. If a user is being reviewed, we'll write their key file in the
+    # townie pre save.
+    townie = Townie.objects.filter(username=instance.townie.username)
+    if not townie:
+        return
+
+    townie = townie[0]
+
+    if townie.reviewed:
+        townie.write_authorized_keys()
 
 
 @receiver(pre_save, sender=Townie)
