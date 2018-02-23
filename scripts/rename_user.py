@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""This script wraps the usermod command to allow user account renames via sudoers."""
+"""This script wraps the usermod command to allow user account renames via
+sudoers."""
 import os
 import sys
 import subprocess
 
 
-def rename_user(username, new_username):
-    # usermod -l new_username -m -d /home/{new_username} username
+def rename_user(old_username, new_username):
+    """Given an old and a new username, renames user on disk with usermod.
+    Raises if the usermod call fails."""
     args = [
         'usermod',
         '-l',
@@ -14,7 +16,7 @@ def rename_user(username, new_username):
         '-m',
         '-d',
         os.path.join('/home', new_username),
-        username
+        old_username
     ]
     subprocess.run(args, check=True)
 
